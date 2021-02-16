@@ -1,8 +1,8 @@
 const platformClient = require('purecloud-platform-client-v2');
 
 const env = 'mypurecloud.ie';
-const clientId = '<put here OAuth clientId>'; // <put here OAuth clientId>
-const clientSecret = '<put here OAuth clientSecret>'; //
+const clientId = '<put here OAuth clientId>';
+const clientSecret = '<put here OAuth clientSecret>';
 
 // Node.js - Client credentials strategy
 let client = platformClient.ApiClient.instance;
@@ -15,7 +15,7 @@ client
     console.log('accessToken: ', client.authData.accessToken);
 
     // your query to Genesys Cloud API
-    query();
+    // query();
   })
   .catch(function (err) {
     console.error(err);
