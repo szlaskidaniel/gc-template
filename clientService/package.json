@@ -1,0 +1,14 @@
+{
+  "name": "client-service-example-app",
+  "version": "1.0.0",
+  "description": "Genesys Cloud client service Auth",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Daniel Szlaski",
+  "license": "ISC",
+  "dependencies": {
+    "purecloud-platform-client-v2": "^61.0.0"
+  }
+}
