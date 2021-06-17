@@ -10,6 +10,9 @@
 
     <title>Genesys Cloud</title>
 
+    <script src="https://sdk-cdn.mypurecloud.com/webrtc-sdk/latest/purecloud-webrtc-sdk.js"></script>
+
+
 </head>
 
 <body>
@@ -38,12 +41,14 @@
         }
 
         function action() {
+
             getMe().then(async (data) => {
                 console.log(data);
             }).catch((err) => {
                 console.error("error");
             });
         };
+
 
 
     </script>

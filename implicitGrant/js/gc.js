@@ -4,6 +4,7 @@
 const redirectUri = window.location.href.split('?')[0];
 const platformClient = require('platformClient');
 const client = platformClient.ApiClient.instance;
+
 client.setPersistSettings(true);
 
 let foo = unescape(getUrlVars()['foo']);
@@ -20,7 +21,7 @@ const usersApi = new platformClient.UsersApi();
 
 // Authenticate & perform Action if URL Param is set to TRUE
 client
-  .loginImplicitGrant('<put your clientId here>', redirectUri, {
+  .loginImplicitGrant('c65435ce-fe72-42af-a2d5-604c6016b487', redirectUri, {
     state: JSON.stringify(myParams),
   })
   .then(() => {
@@ -29,6 +30,7 @@ client
     //retrieve URL params from state
     let myParams;
     try {
+      console.log(client);
       myParams = JSON.parse(client.authData.state);
     } catch (error) {
       console.error(error);
@@ -39,7 +41,7 @@ client
     }
 
     // Call your functions now (you're authenticated)
-    // getMe();
+    getMe();
   })
   .catch((err) => {
     // Handle failure response
