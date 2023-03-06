@@ -1,0 +1,11 @@
+{
+    "serverlessConsole.services": [
+        {
+            "type": "dynamodb",
+            "title": "custom-crm",
+            "tableName": "custom-crm",
+            "awsProfile": "ccportal",
+            "region": "eu-central-1"
+        }
+    ]
+}

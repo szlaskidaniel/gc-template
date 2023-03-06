@@ -21,7 +21,7 @@ const usersApi = new platformClient.UsersApi();
 
 // Authenticate & perform Action if URL Param is set to TRUE
 client
-  .loginImplicitGrant('c65435ce-fe72-42af-a2d5-604c6016b487', redirectUri, {
+  .loginImplicitGrant('1abe2ac3-f16b-4cbf-a2cd-a9515f56c50f', redirectUri, {
     state: JSON.stringify(myParams),
   })
   .then(() => {

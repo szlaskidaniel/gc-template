@@ -2,15 +2,19 @@ const platformClient = require('purecloud-platform-client-v2');
 const Axios = require('axios').default;
 
 // Emeabilling
-// const env = 'mypurecloud.ie';
-// const clientId = '1b2d2962-f4fa-4b74-a0bb-5ba225371192';
-// const clientSecret = 'aY5froP__ofufRJOrDR0IQj7ATES7EIeSHySJROV7M0';
+const env = 'mypurecloud.ie';
+const clientId = 'ccf5b0b3-805f-460b-b2e1-8be9c82b64cc';
+const clientSecret = 'pmr8QBO_d_wF2ydm8Qr6ER6k7G1z6imTTwx7RSS6Ld4';
 
 // TestDriveTest
-const env = 'mypurecloud.ie';
-const clientId = 'fc4a4216-497c-4b02-8307-a86f3319f3a5';
-const clientSecret = 'cA2xaWimH5tAcVvOwAA10hDCKCbEoHxFsnOmbjg5IV4';
+// const env = 'mypurecloud.ie';
+// const clientId = 'fc4a4216-497c-4b02-8307-a86f3319f3a5';
+// const clientSecret = 'cA2xaWimH5tAcVvOwAA10hDCKCbEoHxFsnOmbjg5IV4';
 
+// Kari Test
+// const env = 'mypurecloud.ie';
+// const clientId = 'ba59caae-307f-4d52-ad12-e02c225a5330';
+// const clientSecret = '95TFrB9p94BiNgjYa9DQ1D8n2Qk3NKBGUt1L0hTpwk8';
 
 const urlPath = `https://api.${env}/platform`;
 
@@ -18,6 +22,7 @@ const urlPath = `https://api.${env}/platform`;
 let client = platformClient.ApiClient.instance;
 
 client.setEnvironment(env);
+console.log('Attempt to login...');
 client
   .loginClientCredentialsGrant(clientId, clientSecret)
   .then(async function () {
@@ -25,23 +30,29 @@ client
     console.log('accessToken: ', client.authData.accessToken);
 
     // your query to Genesys Cloud API
+
+    //await patchConversation('123');
+    //await startWorkFlow('b78b16ad-439f-4844-af89-42c7e7537df3');
+    await getWorkflowExecution('zf2mn3rf2omll1pui24131arbs98b3uekrtuc0qlg0ndl42f06');
+
     //await query();
-    //await scim_getUsers('agent-uk@emeabilling.com');
+    //await scim_getUsers('daniel.szlaski@genesys.com');
     //await scim_updateUserId();
-    await getProcessAutomationTriggers(client.authData.accessToken);
+    //await getProcessAutomationTriggers(client.authData.accessToken);
     // await putProcessAutomationTrigger(
     //   client.authData.accessToken,
-    //   '7c33c4e7-6809-43e7-a836-15859a8db57b'
+    //   '432f6623-2316-4d44-b28e-49085ea61db8'
     // );
     // await deleteProcessAutomationTrigger(
     //   client.authData.accessToken,
-    //   'd9e190ac-bdf0-498e-b8af-3db95f5a93bf'
+    //   '97886086-6268-4dfe-b1f7-0c1710d49a3f'
     // );
-    await postProcessAutomationTrigger(client.authData.accessToken);
+    //await postProcessAutomationTrigger(client.authData.accessToken);
 
     //console.log('DONE!');
   })
   .catch(function (err) {
+    console.error('ERROR!');
     console.error(err);
   });
 
@@ -80,9 +91,7 @@ async function scim_getUsers(_userName) {
   apiInstance
     .getScimUsers(filter, opts)
     .then((data) => {
-      console.log(
-        `getScimUsers success! data: ${JSON.stringify(data, null, 2)}`
-      );
+      console.log(`getScimUsers success! data: ${JSON.stringify(data, null, 2)}`);
     })
     .catch((err) => {
       console.log('There was a failure calling getScimUsers');
@@ -136,7 +145,7 @@ async function getProcessAutomationTriggers(_token) {
           'Content-Type': 'application/json',
         },
       }).then((response) => {
-        console.log(response.data);
+        console.log(JSON.stringify(response.data));
         resolve();
       });
     } catch (error) {
@@ -149,25 +158,45 @@ async function getProcessAutomationTriggers(_token) {
 async function postProcessAutomationTrigger(_token) {
   return new Promise(async (resolve, reject) => {
     try {
+      // let body = {
+      //   topicName: 'v2.organization.conversations.messages',
+      //   name: 'Process Automation New Message - delete me',
+      //   enabled: false,
+      //   target: {
+      //     type: 'Workflow',
+      //     id: '9405b9e3-2399-4a6d-8915-5c3e59b13264',
+      //   },
+      //   matchCriteria: [
+      //     {
+      //       "jsonPath": "participants[?(@.type == 'sms')]",
+      //       "operator": "NotEqual",
+      //       "value": "[]"
+      //     }
+      //   ]
+      // };
+
       let body = {
-        topicName: 'v2.organization.conversations',
-        name: 'Process Automation external interaction disconnected',
+        topicName: 'v2.organization.conversations.messages',
+        name: 'notificationTest',
+        enabled: false,
         target: {
           type: 'Workflow',
-          id: 'a1b20775-405b-4040-b421-c43adafbc722',
+          id: '06586d68-4879-402a-9200-e8c3b221cbce', // Recording Consent
         },
         matchCriteria: [
           {
-            "jsonPath": "participants[?(@.purpose == 'external' && @.endTime)]",
-            "operator": "NotEqual",
-            "value": "[]"
-          }, {
-            "jsonPath": "participants[?(@.attributes['Disconnect Processing Completed'] == true)]",
-            "operator": "Equal",
-            "value": "[]" 
-          }                  
-        ],        
+            jsonPath: "participants[?(@.purpose == 'external' && @.state =='disconnected')]",
+            operator: 'NotEqual',
+            value: '[]',
+          },
+          {
+            jsonPath: "participants[?(@.attributes['Disconnect Processing Completed'] == 'true')]",
+            operator: 'Equal',
+            value: '[]',
+          },
+        ],
       };
+
       return await Axios({
         url: `${urlPath}/api/v2/processautomation/triggers`,
         method: 'POST',
@@ -193,24 +222,21 @@ async function putProcessAutomationTrigger(_token, _id) {
   return new Promise(async (resolve, reject) => {
     try {
       let body = {
-        topicName: 'v2.organization.conversations',
-        name: 'Process Automation interaction disconnected',
+        topicName: 'v2.organization.conversations.messages',
+        name: 'Process Automation New Message',
+        enabled: true,
         target: {
           type: 'Workflow',
-          id: 'a1b20775-405b-4040-b421-c43adafbc722',
+          id: '9405b9e3-2399-4a6d-8915-5c3e59b13264',
         },
         matchCriteria: [
           {
-            "jsonPath": "participants[?(@.purpose == 'customer' && @.endTime)]",
-            "operator": "NotEqual",
-            "value": "[]"
-          }, {
-            "jsonPath": "participants[?(@.attributes['Disconnect Processing Completed'] == true)]",
-            "operator": "Equal",
-            "value": "[]" 
-          }                  
+            jsonPath: "participants[?(@.queue.id == '21cb5843-5a7e-4d36-a4b0-0268c5b2d242')]",
+            operator: 'NotEqual',
+            value: '[]',
+          },
         ],
-        version: 7
+        version: 1,
       };
       return await Axios({
         url: `${urlPath}/api/v2/processautomation/triggers/${_id}`,
@@ -255,3 +281,56 @@ async function deleteProcessAutomationTrigger(_token, _triggerId) {
 }
 
 //#endregion
+
+async function patchConversation(conversationId) {
+  let apiInstance = new platformClient.ConversationsApi();
+
+  let body = {
+    startTime: '',
+    recordingState: 'PAUSED',
+  };
+
+  apiInstance
+    .patchConversationsCall(conversationId, body)
+    .then((data) => {
+      console.log(`patchConversationsCall success! data: ${JSON.stringify(data, null, 2)}`);
+    })
+    .catch((err) => {
+      console.log('There was a failure calling patchConversationsCall');
+      console.error(err);
+    });
+}
+
+async function startWorkFlow(id) {
+  let apiInstance = new platformClient.ArchitectApi();
+
+  const flowLaunchRequest = {
+    flowId: id,
+  };
+
+  apiInstance
+    .postFlowsExecutions(flowLaunchRequest)
+    .then((data) => {
+      console.log(`postFlowsExecutions success! data: ${JSON.stringify(data, null, 2)}`);
+    })
+    .catch((err) => {
+      console.log('There was a failure calling postFlowsExecutions');
+      console.error(err);
+    });
+}
+
+async function getWorkflowExecution(id) {
+  let apiInstance = new platformClient.ArchitectApi();
+
+  apiInstance
+    .getFlowsExecution(id)
+    .then((data) => {
+      console.log(`getFlowsExecution success! data: ${JSON.stringify(data, null, 2)}`);
+    })
+    .catch((err) => {
+      console.log('There was a failure calling getFlowsExecution');
+      console.error(err);
+    });
+}
+
+//
